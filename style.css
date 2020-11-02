@@ -71,3 +71,8 @@ html,body {
   #game-start {
     cursor: pointer;
   }
+
+  #user {
+    height:50px;
+    width: 50px;
+  }
