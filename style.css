@@ -65,7 +65,7 @@ html,body {
   
   #btm-right {
     grid-area: btm-right;
-    font-size: 8px;
+    font-size: 10px;
   }
 
   #game-start {
@@ -73,6 +73,9 @@ html,body {
   }
 
   #user {
-    height:50px;
-    width: 50px;
+   display: none;
+  }
+
+  #enemy {
+    display: none;
   }
