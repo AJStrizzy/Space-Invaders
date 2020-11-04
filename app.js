@@ -12,6 +12,10 @@ const width = computedStyle.width;
 
 const ctx = game.getContext('2d');
 
+document.getElementById('game-start').addEventListener('click', function() {
+    setInterval(rePaint, 1000/60)
+})
+
 
 
 class Aliens {
@@ -28,24 +32,21 @@ class Aliens {
     }
 }
 
-
-const alien = new Aliens(140, 10, 20, 20)
-
-
-
-// const arrAliens = [];
-// for (let row = 0; row < 3; row++) {
-//     for(let col = 0; col < 4; col++) {
-//         const alien = new Aliens ({
-//             x: col * 20,
-//             y: row * 20,
-//         })
-//         arrAliens.push[alien]
-//     }
-// }
+// const alien = new Aliens(140, 10, 18, 8)
 
 
 
+const arrAliens = [];
+for (let row = 0; row < 4; row++) {
+    for(let col = 0; col < 8; col++) {
+        const alien = new Aliens (
+            col * 27 + 46, row * 13 + 7, 18, 8
+        )
+        arrAliens.push(alien)
+    }
+}
+
+console.log(arrAliens)
 
 class Sprite {
     constructor(x, y, width, height) {
@@ -61,14 +62,33 @@ class Sprite {
     }
 }
 
-
 const player = new Sprite(138, 125, 24, 16)
 
-document.getElementById('game-start').addEventListener('click', function() {
-    player.render();
-    alien.render()
-    setInterval(rePaint, 1000/500)
-})
+
+
+class Bullets {
+    constructor(x, y, color, width, height) {
+        this.x = x
+        this.y = y
+        this.color = color
+        this.width = width
+        this.height = height
+        this.speed = -1.5
+        this.alive = true
+    }
+    render() {
+        ctx.fillStyle = this.color
+        ctx.fillRect(this.x, this.y, this.width, this.height)
+        ctx.update(this.y = this.y +this.speed)
+    }
+}
+
+const bullet = new Bullets(player.x - 1 + (player.width/2), player.y - 7, 'white', 2, 6)
+console.log(bullet)
+
+
+
+
 
 
 
@@ -78,18 +98,30 @@ document.addEventListener('keydown', function(evt) {
     } else if (evt.key === 'ArrowLeft' && player.x > 6) {
         player.x -= 10
     } else if (evt.keyCode === 32) {
-    console.log("shoot")
+       console.log(bullet)
     }
 })
+
+
+
+
+
+
+   
+
+
 
 
 function rePaint() {
     ctx.clearRect(0, 0, game.width, game.height)
 
     player.render()
-    alien.render()
+    // arrAliens.render()
+    arrAliens.forEach(function (par){
+        par.render()
+    })
+    
+
+    bullet.render()
     
 }
-
-
-   
