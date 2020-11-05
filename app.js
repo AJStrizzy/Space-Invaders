@@ -87,17 +87,31 @@ class Sprite {
         this.y = y
         this.width = width
         this.height = height
-        // this.speed = 0
+        this.speed = 0
         this.alive = true
     }
 
     render() {
-        ctx.drawImage(image, this.x, this.y, this.width, this.height)
-        // ctx.update(this.x += this.speed)
+        ctx.drawImage(image, this.x += this.speed, this.y, this.width, this.height)
     }
 }
 
 const player = new Sprite(138, 128, 24, 16)
+
+document.addEventListener('keydown', function(evt) {
+    if (evt.key === 'ArrowRight' && player.x < 270 && player.speed === 0) {
+        player.speed += 1.5
+    } else if (evt.key === 'ArrowLeft' && player.x > 6 && player.speed === 0)  {
+        player.speed -= 1.5
+    } else if (evt.key === 'ArrowLeft' && player.x > 6 && player.speed > 0)  {
+        player.speed *= -1
+    } else if (evt.key === 'ArrowRight' && player.x < 270 && player.speed < 0)  {
+        player.speed *= -1
+    } else if (evt.key === null) {
+        player.speed === 0
+    }
+})
+
 
 
 
@@ -126,14 +140,6 @@ document.addEventListener('keydown', function(evt) {
 }) 
 
 
-
-document.addEventListener('keydown', function(evt) {
-    if (evt.key === 'ArrowRight' && player.x < 270){
-        player.x += 10
-    } else if (evt.key === 'ArrowLeft' && player.x > 6) {
-        player.x -= 10
-    } 
-})
 
 function alienBoom() {
     for(a = 0; a < arrAliens.length; a++) {
