@@ -23,7 +23,7 @@ html,body {
   }
   
   #container {
-  Height: 600px;
+  height: 600px;
   width: 550px;
   background-color: silver;
   margin: 0 auto;
