@@ -53,44 +53,7 @@ for (let row = 0; row < 5; row++) {
     }
 }
 
-// const leftAlien = 40;
-// arrAliens.forEach(function (place) {
-// if (place.x < leftAlien) {
-//     leftAlien.push(place)
-//     }
-// })
 
-// console.log (leftAlien.x)
-// const rightAlien = [0];
-// arrAliens.forEach(function (place) {
-// if (place.x > rightAlien) {
-//     rightAlien.push(place)
-//     }
-// })
-
-// console.log(rightAlien.x)
-// function changeDirection () {
-//     if (leftAlien.x <= 5) {
-//         arrAliens.speed *= -1 && arrAliens.y + 5
-//     } else if (rightAlien.x >= 70) {
-//             arrAliens.speed *= -1 && arrAliens.y + 5
-//      }
-// }
-
-
-
-// console.log(rightAlien)
-
-
-// function changeDir () {
-//     for (var i = 0; i <= arrAliens.length; i++)
-//     if (arrAliens[i].x > 60) {
-//         console.log(arrAliens[i].x)
-//         arrAliens.speed *= -1
-//     } else if (arrAliens[i].x < 5) {
-//         arrAliens.speed *= -1
-//     }
-// }
 
 function changeDirection () {
     arrAliens.forEach(function(alien) {
@@ -106,32 +69,14 @@ function changeDirection () {
 })
 }
 
-// function changeD () {
-//     arrAliens.forEach(function(alien) {
-//     if (alien.x >= 265) {
-//         alien.y += .01
-//     } else if (alien.x <= 20) {
-//        alien.y += .01
-//     }
-// })
-// }
-
-// run through each bullet and alien array, compare coordinates of each bullet to each alien,
-// slice out the bullet and alien that line up
-
-
-function boom(){
-    for(a = 0; a <= arrAliens.length; a++) {
-        for (b = 0; b <=)
+let startScore = 0
+function scoreUpdate() {
+    score.innerHTML = "Score:" + startScore
+    if(startScore === 2250) {
+        score.innerHTML = "YOU WIN!"
+        startButton.innerHTML = "Play again"
     }
-
-}
-
-
-
-
-
-
+} 
 
 
 
@@ -181,15 +126,44 @@ document.addEventListener('keydown', function(evt) {
 }) 
 
 
+
 document.addEventListener('keydown', function(evt) {
     if (evt.key === 'ArrowRight' && player.x < 270){
         player.x += 10
     } else if (evt.key === 'ArrowLeft' && player.x > 6) {
         player.x -= 10
-    } else if (evt.keyCode === 32) {
-       console.log(bullet)
-    }
+    } 
 })
+
+function alienBoom() {
+    for(a = 0; a < arrAliens.length; a++) {
+       
+        for(b = 0; b < arrBullets.length; b++) {
+           if(arrBullets[b].x >= arrAliens[a].x - 3 && arrBullets[b].x <=arrAliens[a].x +17
+            && arrBullets[b].y >= arrAliens[a].y - 5 && arrBullets[b].y <=arrAliens[a].y +9) {
+                arrAliens.splice(a,1)
+                arrBullets.splice(b,1)
+                startScore += 50
+            }
+        }
+    }
+}
+
+
+function playerBoom() {
+    for(a = 0; a < arrAliens.length; a++) {
+           if(player.x >= arrAliens[a].x - 3 && player.x <=arrAliens[a].x +17
+            && player.y >= arrAliens[a].y - 5 && player.y <=arrAliens[a].y +9) {
+                player = (null)
+            }
+        }
+    }
+
+
+
+
+
+
 
 
 function rePaint() {
@@ -208,6 +182,28 @@ function rePaint() {
     })
 
     changeDirection()
-
-    
+    alienBoom()
+    scoreUpdate()
+    playerBoom()
 }
+
+// function rePaint2() {
+//     ctx.clearRect(0, 0, game.width, game.height)
+
+//     player.render()
+//     arrAliens.forEach(function (par){
+//         par.render()
+//     })
+    
+    
+
+   
+//     arrBullets.forEach(function (par) {
+//         par.render()
+//     })
+
+//     changeDirection()
+//     alienBoom()
+//     scoreUpdate()
+//     playerBoom()
+// }
