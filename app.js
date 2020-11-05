@@ -154,14 +154,22 @@ class Bullets {
         ctx.fillRect(this.x, this.y += this.speed, this.width, this.height)
     }
 }
-
+let fireStatus = 1
 const arrBullets = [];
 document.addEventListener('keydown', function(evt) {
-    if (evt.key === 'a' || evt.key === 'A') {
+    
+    if (evt.key === 'a' && fireStatus === 1 || evt.key === 'A' && fireStatus === 1) {
         const bullet = new Bullets(player.x - 1 + (player.width/2), player.y - 5, 'white', 2, 6)
         arrBullets.push(bullet)
+        fireStatus *= -1
+        setTimeout(fireReady, 350);
     }
 }) 
+
+
+function fireReady() {
+    fireStatus *= -1
+}
 
 
 
