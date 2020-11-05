@@ -2,7 +2,10 @@ const healthDisplay = document.getElementById("game-lives");
 const score = document.getElementById("game-score");
 const startButton = document.getElementById("game-start");
 const game = document.getElementById("game");
-
+//fix score/gameover bug
+//make reset game button work
+//make enemies shoot
+//make lives work
 
 const image = document.getElementById('user');
 const image2 = document.getElementById('enemy');
@@ -17,6 +20,12 @@ const ctx = game.getContext('2d');
 document.getElementById('game-start').addEventListener('click', function() {
     setInterval(rePaint, 1000/60)
 })
+
+document.getElementById('game-start').addEventListener('click', function() {
+    startButton.style.fontSize = "medium"
+    startButton.innerHTML = "Defeat the alien horde!"
+})
+
 
 const left = 'left';
 const right = 'right';
@@ -58,13 +67,17 @@ for (let row = 0; row < 5; row++) {
 function changeDirection () {
     arrAliens.forEach(function(alien) {
     if (alien.x >= 270) {
+        // debugger
         arrAliens.forEach(function(a) {
             a.speed *= -1
-            a.y += .4
+            a.y += 1
+            a.x -= 2 // should be .4
         }) } else if (alien.x <= 15) {
+            // debugger
         arrAliens.forEach(function(a) {
             a.speed *= -1
-            a.y += .4
+            a.y += 1 //should be .4
+            a.x += 2
     }) }
 })
 }
@@ -74,11 +87,17 @@ function scoreUpdate() {
     score.innerHTML = "Score:" + startScore
     if(startScore === 2250) {
         score.innerHTML = "YOU WIN!"
-        startButton.innerHTML = "Play again"
+        startButton.style.fontSize = "large"
+        startButton.innerHTML = "Play Again!"
+        player.y -= .7
     }
 } 
 
-
+function gameOver () {
+    score.innerHTML = "YOU LOSE!"
+    startButton.innerHTML = "Fly again"
+    player.alive = false
+}
 
 
 class Sprite {
@@ -107,11 +126,16 @@ document.addEventListener('keydown', function(evt) {
         player.speed *= -1
     } else if (evt.key === 'ArrowRight' && player.x < 270 && player.speed < 0)  {
         player.speed *= -1
-    } else if (evt.key === null) {
-        player.speed === 0
-    }
+    } 
 })
 
+document.addEventListener('keyup', function(evt) {
+    if (evt.key === 'ArrowRight') {
+        player.speed *= 0
+    } else if (evt.key === 'ArrowLeft')  {
+        player.speed *= 0
+    } 
+})
 
 
 
@@ -133,7 +157,7 @@ class Bullets {
 
 const arrBullets = [];
 document.addEventListener('keydown', function(evt) {
-    if (evt.key === 'a') {
+    if (evt.key === 'a' || evt.key === 'A') {
         const bullet = new Bullets(player.x - 1 + (player.width/2), player.y - 5, 'white', 2, 6)
         arrBullets.push(bullet)
     }
@@ -160,7 +184,7 @@ function playerBoom() {
     for(a = 0; a < arrAliens.length; a++) {
            if(player.x >= arrAliens[a].x - 3 && player.x <=arrAliens[a].x +17
             && player.y >= arrAliens[a].y - 5 && player.y <=arrAliens[a].y +9) {
-                player = (null)
+                gameOver()
             }
         }
     }
@@ -175,7 +199,11 @@ function playerBoom() {
 function rePaint() {
     ctx.clearRect(0, 0, game.width, game.height)
 
-    player.render()
+    if(player.alive === true) {
+        player.render()
+    }
+    
+    
     arrAliens.forEach(function (par){
         par.render()
     })
