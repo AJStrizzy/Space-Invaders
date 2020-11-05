@@ -94,12 +94,14 @@ for (let row = 0; row < 5; row++) {
 
 function changeDirection () {
     arrAliens.forEach(function(alien) {
-    if (alien.x >= 265) {
+    if (alien.x >= 270) {
         arrAliens.forEach(function(a) {
             a.speed *= -1
-        }) } else if (alien.x <= 20) {
+            a.y += .4
+        }) } else if (alien.x <= 15) {
         arrAliens.forEach(function(a) {
             a.speed *= -1
+            a.y += .4
     }) }
 })
 }
@@ -113,6 +115,18 @@ function changeDirection () {
 //     }
 // })
 // }
+
+// run through each bullet and alien array, compare coordinates of each bullet to each alien,
+// slice out the bullet and alien that line up
+
+
+function boom(){
+    for(a = 0; a <= arrAliens.length; a++) {
+        for (b = 0; b <=)
+    }
+
+}
+
 
 
 
