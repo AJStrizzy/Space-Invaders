@@ -9,7 +9,7 @@ const image2 = document.getElementById('enemy');
 const computedStyle = getComputedStyle(game);
 const height = computedStyle.height;
 const width = computedStyle.width;
-console.log(height, width)
+
 // game.height = height.replace("px", "")
 // game.width = width.replace("px", "")
 const ctx = game.getContext('2d');
@@ -29,7 +29,7 @@ class Aliens {
         this.width = width
         this.height = height
         this.alive = true
-        this.speed = 0.3
+        this.speed = .5
         this.direction = 'left'
     }
     
@@ -40,22 +40,85 @@ class Aliens {
 }
 
 
-// chgDir(){
-//     if(this.x = 10) {
-//         this.speed *= -1
-//     }
-// }
+
 
 
 const arrAliens = [];
-for (let row = 0; row < 4; row++) {
-    for(let col = 0; col < 8; col++) {
+for (let row = 0; row < 5; row++) {
+    for(let col = 0; col < 9; col++) {
         const alien = new Aliens (
-            col * 27 + 46, row * 13 + 7, 18, 8
+            col * 25 + 46, row * 13 + 7, 18, 8
         )
         arrAliens.push(alien)
     }
 }
+
+// const leftAlien = 40;
+// arrAliens.forEach(function (place) {
+// if (place.x < leftAlien) {
+//     leftAlien.push(place)
+//     }
+// })
+
+// console.log (leftAlien.x)
+// const rightAlien = [0];
+// arrAliens.forEach(function (place) {
+// if (place.x > rightAlien) {
+//     rightAlien.push(place)
+//     }
+// })
+
+// console.log(rightAlien.x)
+// function changeDirection () {
+//     if (leftAlien.x <= 5) {
+//         arrAliens.speed *= -1 && arrAliens.y + 5
+//     } else if (rightAlien.x >= 70) {
+//             arrAliens.speed *= -1 && arrAliens.y + 5
+//      }
+// }
+
+
+
+// console.log(rightAlien)
+
+
+// function changeDir () {
+//     for (var i = 0; i <= arrAliens.length; i++)
+//     if (arrAliens[i].x > 60) {
+//         console.log(arrAliens[i].x)
+//         arrAliens.speed *= -1
+//     } else if (arrAliens[i].x < 5) {
+//         arrAliens.speed *= -1
+//     }
+// }
+
+function changeDirection () {
+    arrAliens.forEach(function(alien) {
+    if (alien.x >= 265) {
+        arrAliens.forEach(function(a) {
+            a.speed *= -1
+        }) } else if (alien.x <= 20) {
+        arrAliens.forEach(function(a) {
+            a.speed *= -1
+    }) }
+})
+}
+
+// function changeD () {
+//     arrAliens.forEach(function(alien) {
+//     if (alien.x >= 265) {
+//         alien.y += .01
+//     } else if (alien.x <= 20) {
+//        alien.y += .01
+//     }
+// })
+// }
+
+
+
+
+
+
 
 
 
@@ -75,7 +138,7 @@ class Sprite {
     }
 }
 
-const player = new Sprite(138, 125, 24, 16)
+const player = new Sprite(138, 128, 24, 16)
 
 
 
@@ -86,7 +149,7 @@ class Bullets {
         this.color = color
         this.width = width
         this.height = height
-        this.speed = -1.5
+        this.speed = -2.5
         this.alive = true
     }
     render() {
@@ -98,22 +161,10 @@ class Bullets {
 const arrBullets = [];
 document.addEventListener('keydown', function(evt) {
     if (evt.key === 'a') {
-        const bullet = new Bullets(player.x - 1 + (player.width/2), player.y - 7, 'white', 2, 6)
+        const bullet = new Bullets(player.x - 1 + (player.width/2), player.y - 5, 'white', 2, 6)
         arrBullets.push(bullet)
     }
 }) 
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 document.addEventListener('keydown', function(evt) {
@@ -125,24 +176,6 @@ document.addEventListener('keydown', function(evt) {
        console.log(bullet)
     }
 })
-
-
-
-
-
-// function rightBoundary() {
-//     if(player.x >= 270) {
-//         player.speed -= 2
-//     }
-//     return player.speed
-// }
-
-
-
-
-   
-
-
 
 
 function rePaint() {
@@ -160,7 +193,7 @@ function rePaint() {
         par.render()
     })
 
-    
+    changeDirection()
 
-    // rightBoundary()
+    
 }
