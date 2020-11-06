@@ -8,6 +8,9 @@ const fireSound = document.getElementById('fire');
 const gameOverSound = document.getElementById('game-over');
 const gameWinSound = document.getElementById('win-sound');
 const backSound = document.getElementById('back-sound')
+const damageSound = document.getElementById('player-damage')
+const alienShooting = document.getElementById("enemy-sound")
+
 const image = document.getElementById('user');
 const image2 = document.getElementById('enemy');
 const computedStyle = getComputedStyle(game);
@@ -22,7 +25,6 @@ function bgMusic() {
     backSound.play()
 }
 
-//add sound for ship damage
 //alien shooting bug
 //restart button
 
@@ -35,9 +37,9 @@ document.getElementById('game-start').addEventListener('click', function() {
     setTimeout(bgMusic, 1250)
     startButton.style.fontSize = "medium"
     startButton.innerHTML = "Defeat the alien horde!"
-    setInterval(fire, 2000)
+        setInterval(fire, 2000)
+    })
 
-})
 
 
 // Player set up
@@ -97,8 +99,7 @@ class Aliens {
         this.width = width
         this.height = height
         this.alive = true
-        this.speed = 2  //.45
-        this.direction = 'left'
+        this.speed = .45  //.45
     }
     
     render() {
@@ -160,14 +161,13 @@ const getRandomAlien = (aliensList) => {
 
     const arrAlienBullets = [];
     const bottomAliens = getBottomAliens();
-    // const randomAlien = getRandomAlien(bottomAliens);
-    // const alienBullet = new AlienBullets(randomAlien.x, randomAlien.y, 'red', 3, 8)
     
 
     function fire() {
         const randomAlien = getRandomAlien(bottomAliens);
         const alienBullet = new AlienBullets(randomAlien.x + 14, randomAlien.y + 12, 'red', 3, 8)       
         arrAlienBullets.push(alienBullet)
+            alienShooting.play()
     }
 
     
@@ -218,11 +218,12 @@ function scoreUpdate() {
 function gameOver () {
    if(player.alive === true){
     score.innerHTML = "YOU LOSE!"
-    startButton.innerHTML = "Fly again"
+    startButton.innerHTML = "Play Again"
     player.alive = false
     backSound.pause()
     gmLive *= -1
-    healthDisplay.innerHTML = "YOU LOSE"
+    healthDisplay.style.fontSize = "Large"
+    healthDisplay.innerHTML = "☠ ☠ ☠"
    }
 }
 
@@ -332,9 +333,11 @@ function playerDamage() {
             if(player.alive === true) {
                 playerHealth -= 1 }
              if (playerHealth === 2) {
-                 healthDisplay.innerHTML = "Lives: ❤❤"
+                healthDisplay.innerHTML = "❤ ❤"
+                damageSound.play()
              } else if (playerHealth === 1) {
-                healthDisplay.innerHTML = "Lives: ❤"
+                healthDisplay.innerHTML = "❤"
+                damageSound.play()
              }
              arrAlienBullets.splice(a,1)
              if(player.alive === true && playerHealth >= 1) {
@@ -345,7 +348,7 @@ function playerDamage() {
     }
 }
 
-
+//refreshes and constantly updates all relevant functions
 
 function rePaint() {
     ctx.clearRect(0, 0, game.width, game.height)
@@ -368,6 +371,5 @@ function rePaint() {
     playerBoom()
     playerDamage()
     playerDeath()
-    console.log(playerHealth)
 }
 
