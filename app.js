@@ -2,11 +2,21 @@ const healthDisplay = document.getElementById("game-lives");
 const score = document.getElementById("game-score");
 const startButton = document.getElementById("game-start");
 const game = document.getElementById("game");
+const enemyHitSound = document.getElementById("enemy-hit");
+const startSound = document.getElementById('start-sound');
+const fireSound = document.getElementById('fire');
+const gameOverSound = document.getElementById('game-over');
+const gameWinSound = document.getElementById('win-sound');
+const backSound = document.getElementById('back-sound')
+
+
 //fix score/gameover bug
 //make reset game button work
 //make enemies shoot
 //make lives work
 //stop bullets after game over
+//scrolling backgroun
+//fix bottom css overhang
 
 const image = document.getElementById('user');
 const image2 = document.getElementById('enemy');
@@ -18,8 +28,17 @@ game.height = height.replace("px", "")
 game.width = width.replace("px", "")
 const ctx = game.getContext('2d');
 
+function bgMusic() {
+    backSound.play()
+}
+
+
+
 document.getElementById('game-start').addEventListener('click', function() {
     setInterval(rePaint, 1000/60)
+    startSound.play()
+    setTimeout(bgMusic(), 5000) /// timeout not working
+
 })
 
 document.getElementById('game-start').addEventListener('click', function() {
@@ -73,6 +92,7 @@ function changeDirection () {
 })
 }
 
+let winSoundCheck = 1
 let startScore = 0
 function scoreUpdate() {
     score.innerHTML = "Score:" + startScore
@@ -80,7 +100,12 @@ function scoreUpdate() {
         score.innerHTML = "YOU WIN!"
         startButton.style.fontSize = "large"
         startButton.innerHTML = "Play Again!"
-        player.y -= 2
+        player.y -= 1
+        backSound.pause()
+        if(winSoundCheck === 1){
+        gameWinSound.play()
+        winSoundCheck *= -1
+        }
     }
 } 
 
@@ -88,6 +113,7 @@ function gameOver () {
     score.innerHTML = "YOU LOSE!"
     startButton.innerHTML = "Fly again"
     player.alive = false
+    backSound.pause()
 }
 
 
@@ -161,6 +187,7 @@ document.addEventListener('keydown', function(evt) {
         arrBullets.push(bullet)
         fireStatus *= -1
         setTimeout(fireReady, 350);
+        fireSound.play()
     }
 }) 
 
@@ -181,12 +208,14 @@ function alienBoom() {
                 arrAliens.splice(a,1)
                 arrBullets.splice(b,1)
                 startScore += 50
+                enemyHitSound.play()
+
             }
         }
     }
 }
 
-
+let gameSoundCheck = 1
 function playerBoom() {
     for(a = 0; a < arrAliens.length; a++) {
            if(player.x < arrAliens[a].x + 33  
@@ -194,6 +223,11 @@ function playerBoom() {
                 && player.y + player.height > arrAliens[a].y 
                 && player.y < arrAliens[a].y +17) {
                 gameOver()
+                
+                if(gameSoundCheck === 1) {
+                    gameOverSound.play()
+                    gameSoundCheck *= -1
+                }
             }
         }
     }
