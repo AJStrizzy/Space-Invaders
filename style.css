@@ -80,6 +80,9 @@ html,body {
     display: none;
   }
 
+#game-start:hover {
+  color: silver;
+}
 
   
   
