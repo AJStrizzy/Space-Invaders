@@ -32,6 +32,7 @@ function bgMusic() {
 
 // Start Game
 document.getElementById('game-start').addEventListener('click', function() {
+    // if(document.getElementById("game-start").innerText === "Start Game") {
     setInterval(rePaint, 1000/60)
     startSound.play()
     setTimeout(bgMusic, 1250)
@@ -39,6 +40,7 @@ document.getElementById('game-start').addEventListener('click', function() {
     startButton.innerHTML = "Defeat the alien horde!"
         setInterval(fire, 2000)
     })
+// }
 
 
 
@@ -109,20 +111,17 @@ class Aliens {
 }
 
 
-//Set  up allien formation
-const aliensGrid = [];
+
 const arrAliens = [];
 for (let row = 0; row < 5; row++) {
-    const aliensCol = [];
+    
     for(let col = 0; col < 10; col++) {
         const alien = new Aliens (
             col * 45 + 46, row * 27 + 20, 33,17
         )
         arrAliens.push(alien)
-        aliensCol.push(alien)
+        }
     }
-    aliensGrid.push(aliensCol)
-}
 
 
 class AlienBullets {
@@ -140,34 +139,37 @@ class AlienBullets {
         ctx.fillRect(this.x, this.y += this.speed, this.width, this.height)
     }
 }
-const getBottomAliens = () => {
-    const bottomAliens = [];
-    for (let col = 0; col < 10; col++) {
-        for ( let row = 4; row >= 0; row--) {
-            if (aliensGrid[row][col]) {
-                bottomAliens.push(aliensGrid[row][col]);
-                break;
-            }
-        }
-    }
-    return bottomAliens;
-}
-
-const getRandomAlien = (aliensList) => {
-    return aliensList[
-        parseInt(Math.random() * aliensList.length)
-    ];
-};
 
     const arrAlienBullets = [];
-    const bottomAliens = getBottomAliens();
+   
     
 
     function fire() {
+        const getBottomAliens = () => {
+            const bottomAliens = [];
+            let groupedByX = {};
+            arrAliens.forEach((alien) => {
+                if (!groupedByX[alien.x]) {
+                    groupedByX[alien.x] = [alien.y,alien];
+                } else if (alien.y > groupedByX[alien.x][0]) {
+                    groupedByX[alien.x] = [alien.y,alien];
+                }
+            }) 
+            for (let key in groupedByX) {
+                bottomAliens.push(groupedByX[key][1]);
+            }
+            return bottomAliens;
+        }
+        const getRandomAlien = (aliensList) => {
+            return aliensList[
+                parseInt(Math.random() * aliensList.length)
+            ];
+        };
+        const bottomAliens = getBottomAliens();
         const randomAlien = getRandomAlien(bottomAliens);
         const alienBullet = new AlienBullets(randomAlien.x + 14, randomAlien.y + 12, 'red', 3, 8)       
         arrAlienBullets.push(alienBullet)
-            alienShooting.play()
+        alienShooting.play()
     }
 
     
