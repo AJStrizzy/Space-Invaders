@@ -6,6 +6,7 @@ const game = document.getElementById("game");
 //make reset game button work
 //make enemies shoot
 //make lives work
+//stop bullets after game over
 
 const image = document.getElementById('user');
 const image2 = document.getElementById('enemy');
@@ -13,8 +14,8 @@ const computedStyle = getComputedStyle(game);
 const height = computedStyle.height;
 const width = computedStyle.width;
 
-// game.height = height.replace("px", "")
-// game.width = width.replace("px", "")
+game.height = height.replace("px", "")
+game.width = width.replace("px", "")
 const ctx = game.getContext('2d');
 
 document.getElementById('game-start').addEventListener('click', function() {
@@ -34,7 +35,7 @@ class Aliens {
         this.width = width
         this.height = height
         this.alive = true
-        this.speed = .5
+        this.speed = .45 
         this.direction = 'left'
     }
     
@@ -44,21 +45,11 @@ class Aliens {
 
 }
 
-
-
-function boundaries() {
-    if(player.x <= 3) {
-        player.speed *= 0
-    } else if (player.x >= 272) {
-        player.speed *= 0
-    }
-}
-
 const arrAliens = [];
 for (let row = 0; row < 5; row++) {
-    for(let col = 0; col < 9; col++) {
+    for(let col = 0; col < 10; col++) {
         const alien = new Aliens (
-            col * 25 + 46, row * 13 + 7, 18, 8
+            col * 45 + 46, row * 27 + 20, 33,17
         )
         arrAliens.push(alien)
     }
@@ -68,15 +59,15 @@ for (let row = 0; row < 5; row++) {
 
 function changeDirection () {
     arrAliens.forEach(function(alien) {
-    if (alien.x >= 270) {
+    if (alien.x >= 490) {
         arrAliens.forEach(function(a) {
             a.speed *= -1
-            a.y += 2
-            a.x -= 2 // should be .4
-        }) } else if (alien.x <= 15) {
+            a.y += 10 //8
+            a.x -= 2 
+        }) } else if (alien.x <= 25) {
         arrAliens.forEach(function(a) {
             a.speed *= -1
-            a.y += 2 //should be .4
+            a.y += 10
             a.x += 2
     }) }
 })
@@ -89,7 +80,7 @@ function scoreUpdate() {
         score.innerHTML = "YOU WIN!"
         startButton.style.fontSize = "large"
         startButton.innerHTML = "Play Again!"
-        player.y -= .7
+        player.y -= 2
     }
 } 
 
@@ -115,16 +106,24 @@ class Sprite {
     }
 }
 
-const player = new Sprite(138, 128, 24, 16)
+const player = new Sprite(247, 350, 51, 45)
+
+function boundaries() {
+    if(player.x <= 2) {
+        player.speed *= 0
+    } else if (player.x >= 495) {
+        player.speed *= 0
+    }
+}
 
 document.addEventListener('keydown', function(evt) {
-    if (evt.key === 'ArrowRight' && player.x < 270 && player.speed === 0) {
-        player.speed += 1.5
-    } else if (evt.key === 'ArrowLeft' && player.x > 6 && player.speed === 0)  {
-        player.speed -= 1.5
-    } else if (evt.key === 'ArrowLeft' && player.x > 6 && player.speed > 0)  {
+    if (evt.key === 'ArrowRight' && player.x < 495 && player.speed === 0) {
+        player.speed += 2.5
+    } else if (evt.key === 'ArrowLeft' && player.x > 2 && player.speed === 0)  {
+        player.speed -= 2.5
+    } else if (evt.key === 'ArrowLeft' && player.x > 2 && player.speed > 0)  {
         player.speed *= -1
-    } else if (evt.key === 'ArrowRight' && player.x < 270 && player.speed < 0)  {
+    } else if (evt.key === 'ArrowRight' && player.x < 495 && player.speed < 0)  {
         player.speed *= -1
     } 
 })
@@ -146,7 +145,7 @@ class Bullets {
         this.color = color
         this.width = width
         this.height = height
-        this.speed = -2.5
+        this.speed = -7
         this.alive = true
     }
     render() {
@@ -157,9 +156,8 @@ class Bullets {
 let fireStatus = 1
 const arrBullets = [];
 document.addEventListener('keydown', function(evt) {
-    
     if (evt.key === 'a' && fireStatus === 1 || evt.key === 'A' && fireStatus === 1) {
-        const bullet = new Bullets(player.x - 1 + (player.width/2), player.y - 5, 'white', 2, 6)
+        const bullet = new Bullets(player.x - 1 + (player.width/2), player.y - 5, 'white', 3.5, 16)
         arrBullets.push(bullet)
         fireStatus *= -1
         setTimeout(fireReady, 350);
@@ -176,8 +174,10 @@ function fireReady() {
 function alienBoom() {
     for(a = 0; a < arrAliens.length; a++) {
         for(b = 0; b < arrBullets.length; b++) {
-           if(arrBullets[b].x >= arrAliens[a].x - 3 && arrBullets[b].x <=arrAliens[a].x +17
-            && arrBullets[b].y >= arrAliens[a].y - 5 && arrBullets[b].y <=arrAliens[a].y +9) {
+            if(arrBullets[b].x < arrAliens[a].x + 33
+                && arrBullets[b].x + 3.5 > arrAliens[a].x
+                && arrBullets[b].y < arrAliens[a].y + 21
+                && arrBullets[b].y + 17 > arrAliens[a].y) {
                 arrAliens.splice(a,1)
                 arrBullets.splice(b,1)
                 startScore += 50
@@ -189,8 +189,10 @@ function alienBoom() {
 
 function playerBoom() {
     for(a = 0; a < arrAliens.length; a++) {
-           if(player.x >= arrAliens[a].x - 3 && player.x <=arrAliens[a].x +17
-            && player.y >= arrAliens[a].y - 5 && player.y <=arrAliens[a].y +9) {
+           if(player.x < arrAliens[a].x + 33  
+                && player.x + player.width > arrAliens[a].x
+                && player.y + player.height > arrAliens[a].y 
+                && player.y < arrAliens[a].y +17) {
                 gameOver()
             }
         }
