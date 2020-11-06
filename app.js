@@ -8,22 +8,12 @@ const fireSound = document.getElementById('fire');
 const gameOverSound = document.getElementById('game-over');
 const gameWinSound = document.getElementById('win-sound');
 const backSound = document.getElementById('back-sound')
-
-
-//fix score/gameover bug
-//make reset game button work
-//make enemies shoot
-//make lives work
-//stop bullets after game over
-//scrolling backgroun
-//fix bottom css overhang
-
 const image = document.getElementById('user');
 const image2 = document.getElementById('enemy');
 const computedStyle = getComputedStyle(game);
 const height = computedStyle.height;
 const width = computedStyle.width;
-
+let gmLive = 1;
 game.height = height.replace("px", "")
 game.width = width.replace("px", "")
 const ctx = game.getContext('2d');
@@ -32,21 +22,74 @@ function bgMusic() {
     backSound.play()
 }
 
+//add sound for ship damage
+//alien shooting bug
+//restart button
 
 
+
+// Start Game
 document.getElementById('game-start').addEventListener('click', function() {
     setInterval(rePaint, 1000/60)
     startSound.play()
-    setTimeout(bgMusic(), 5000) /// timeout not working
-
-})
-
-document.getElementById('game-start').addEventListener('click', function() {
+    setTimeout(bgMusic, 1250)
     startButton.style.fontSize = "medium"
     startButton.innerHTML = "Defeat the alien horde!"
+    setInterval(fire, 2000)
+
 })
 
 
+// Player set up
+class Sprite {
+    constructor(x, y, width, height) {
+        this.x = x
+        this.y = y
+        this.width = width
+        this.height = height
+        this.speed = 0
+        this.alive = true
+    }
+
+    render() {
+        ctx.drawImage(image, this.x += this.speed, this.y, this.width, this.height)
+    }
+}
+let playerHealth = 3
+const player = new Sprite(247, 350, 51, 45)
+
+// Creates left and right boundaries for player
+function boundaries() {
+    if(player.x <= 2) {
+        player.speed *= 0
+    } else if (player.x >= 495) {
+        player.speed *= 0
+    }
+}
+
+// Movement conditions for player
+document.addEventListener('keydown', function(evt) {
+    if (evt.key === 'ArrowRight' && player.x < 495 && player.speed === 0 && gmLive === 1) {
+        player.speed += 2.5
+    } else if (evt.key === 'ArrowLeft' && player.x > 2 && player.speed === 0 && gmLive === 1)  {
+        player.speed -= 2.5
+    } else if (evt.key === 'ArrowLeft' && player.x > 2 && player.speed > 0 && gmLive === 1)  {
+        player.speed *= -1
+    } else if (evt.key === 'ArrowRight' && player.x < 495 && player.speed < 0 && gmLive === 1)  {
+        player.speed *= -1
+    } 
+})
+
+document.addEventListener('keyup', function(evt) {
+    if (evt.key === 'ArrowRight') {
+        player.speed *= 0
+    } else if (evt.key === 'ArrowLeft')  {
+        player.speed *= 0
+    } 
+})
+
+
+//Aliens
 class Aliens {
     constructor(x, y, width, height) {
         this.x = x
@@ -54,7 +97,7 @@ class Aliens {
         this.width = width
         this.height = height
         this.alive = true
-        this.speed = .45 
+        this.speed = 2  //.45
         this.direction = 'left'
     }
     
@@ -64,18 +107,76 @@ class Aliens {
 
 }
 
+
+//Set  up allien formation
+const aliensGrid = [];
 const arrAliens = [];
 for (let row = 0; row < 5; row++) {
+    const aliensCol = [];
     for(let col = 0; col < 10; col++) {
         const alien = new Aliens (
             col * 45 + 46, row * 27 + 20, 33,17
         )
         arrAliens.push(alien)
+        aliensCol.push(alien)
     }
+    aliensGrid.push(aliensCol)
 }
 
 
+class AlienBullets {
+    constructor(x, y, color, width, height) {
+        this.x = x
+        this.y = y
+        this.color = color
+        this.width = width
+        this.height = height
+        this.speed = 2
+        this.alive = true
+    }
+    render() {
+        ctx.fillStyle = this.color
+        ctx.fillRect(this.x, this.y += this.speed, this.width, this.height)
+    }
+}
+const getBottomAliens = () => {
+    const bottomAliens = [];
+    for (let col = 0; col < 10; col++) {
+        for ( let row = 4; row >= 0; row--) {
+            if (aliensGrid[row][col]) {
+                bottomAliens.push(aliensGrid[row][col]);
+                break;
+            }
+        }
+    }
+    return bottomAliens;
+}
 
+const getRandomAlien = (aliensList) => {
+    return aliensList[
+        parseInt(Math.random() * aliensList.length)
+    ];
+};
+
+    const arrAlienBullets = [];
+    const bottomAliens = getBottomAliens();
+    // const randomAlien = getRandomAlien(bottomAliens);
+    // const alienBullet = new AlienBullets(randomAlien.x, randomAlien.y, 'red', 3, 8)
+    
+
+    function fire() {
+        const randomAlien = getRandomAlien(bottomAliens);
+        const alienBullet = new AlienBullets(randomAlien.x + 14, randomAlien.y + 12, 'red', 3, 8)       
+        arrAlienBullets.push(alienBullet)
+    }
+
+    
+
+
+
+
+
+//Set up alien movement pattern
 function changeDirection () {
     arrAliens.forEach(function(alien) {
     if (alien.x >= 490) {
@@ -92,10 +193,13 @@ function changeDirection () {
 })
 }
 
+//updates score + provides winning game condition
 let winSoundCheck = 1
 let startScore = 0
 function scoreUpdate() {
-    score.innerHTML = "Score:" + startScore
+   if(gmLive === 1) {
+       score.innerHTML = "Score:" + startScore
+   }
     if(arrAliens.length === 0) {
         score.innerHTML = "YOU WIN!"
         startButton.style.fontSize = "large"
@@ -105,65 +209,26 @@ function scoreUpdate() {
         if(winSoundCheck === 1){
         gameWinSound.play()
         winSoundCheck *= -1
+        gmLive *= -1
         }
     }
 } 
 
+//provides losing game condition
 function gameOver () {
+   if(player.alive === true){
     score.innerHTML = "YOU LOSE!"
     startButton.innerHTML = "Fly again"
     player.alive = false
     backSound.pause()
+    gmLive *= -1
+    healthDisplay.innerHTML = "YOU LOSE"
+   }
 }
 
 
-class Sprite {
-    constructor(x, y, width, height) {
-        this.x = x
-        this.y = y
-        this.width = width
-        this.height = height
-        this.speed = 0
-        this.alive = true
-    }
 
-    render() {
-        ctx.drawImage(image, this.x += this.speed, this.y, this.width, this.height)
-    }
-}
-
-const player = new Sprite(247, 350, 51, 45)
-
-function boundaries() {
-    if(player.x <= 2) {
-        player.speed *= 0
-    } else if (player.x >= 495) {
-        player.speed *= 0
-    }
-}
-
-document.addEventListener('keydown', function(evt) {
-    if (evt.key === 'ArrowRight' && player.x < 495 && player.speed === 0) {
-        player.speed += 2.5
-    } else if (evt.key === 'ArrowLeft' && player.x > 2 && player.speed === 0)  {
-        player.speed -= 2.5
-    } else if (evt.key === 'ArrowLeft' && player.x > 2 && player.speed > 0)  {
-        player.speed *= -1
-    } else if (evt.key === 'ArrowRight' && player.x < 495 && player.speed < 0)  {
-        player.speed *= -1
-    } 
-})
-
-document.addEventListener('keyup', function(evt) {
-    if (evt.key === 'ArrowRight') {
-        player.speed *= 0
-    } else if (evt.key === 'ArrowLeft')  {
-        player.speed *= 0
-    } 
-})
-
-
-
+// Set up player projeciles
 class Bullets {
     constructor(x, y, color, width, height) {
         this.x = x
@@ -179,13 +244,15 @@ class Bullets {
         ctx.fillRect(this.x, this.y += this.speed, this.width, this.height)
     }
 }
-let fireStatus = 1
+
+// Sets up firing conditions
+let fireStatus = true
 const arrBullets = [];
 document.addEventListener('keydown', function(evt) {
-    if (evt.key === 'a' && fireStatus === 1 || evt.key === 'A' && fireStatus === 1) {
+    if (evt.key === 'a' && fireStatus === true && gmLive === 1|| evt.key === 'A' && fireStatus === true && gmLive === 1) {
         const bullet = new Bullets(player.x - 1 + (player.width/2), player.y - 5, 'white', 3.5, 16)
         arrBullets.push(bullet)
-        fireStatus *= -1
+        fireStatus = !fireStatus
         setTimeout(fireReady, 350);
         fireSound.play()
     }
@@ -193,10 +260,14 @@ document.addEventListener('keydown', function(evt) {
 
 
 function fireReady() {
-    fireStatus *= -1
+    fireStatus = !fireStatus
 }
 
 
+//sets up alien hit conditions
+function alienSound() {
+    enemyHitSound.play()
+}
 
 function alienBoom() {
     for(a = 0; a < arrAliens.length; a++) {
@@ -208,22 +279,28 @@ function alienBoom() {
                 arrAliens.splice(a,1)
                 arrBullets.splice(b,1)
                 startScore += 50
-                enemyHitSound.play()
-
+                enemyHitSound.pause()
+                setTimeout(alienSound, 50)
             }
         }
     }
 }
 
+//sets up lost game conditions
 let gameSoundCheck = 1
 function playerBoom() {
     for(a = 0; a < arrAliens.length; a++) {
            if(player.x < arrAliens[a].x + 33  
                 && player.x + player.width > arrAliens[a].x
                 && player.y + player.height > arrAliens[a].y 
-                && player.y < arrAliens[a].y +17) {
+                && player.y < arrAliens[a].y +17 && gmLive === 1) {
                 gameOver()
-                
+                if(gameSoundCheck === 1) {
+                    gameOverSound.play()
+                    gameSoundCheck *= -1
+                } 
+            } else if(arrAliens[a].y >= 390 && gmLive === 1) {
+                gameOver()
                 if(gameSoundCheck === 1) {
                     gameOverSound.play()
                     gameSoundCheck *= -1
@@ -232,10 +309,41 @@ function playerBoom() {
         }
     }
 
+function playerDeath() {
+    if(playerHealth === 0 && gmLive === 1) {
+        gameOver()
+        if(gameSoundCheck === 1) {
+            gameOverSound.play()
+            gameSoundCheck *= -1
+        }
+    }
+}
 
+function damageAnimation() {
+    player.alive = true
+}
 
-
-
+function playerDamage() {
+    for(a = 0; a < arrAlienBullets.length; a++) {
+        if(player.x < arrAlienBullets[a].x + 3  
+             && player.x + player.width > arrAlienBullets[a].x
+             && player.y + player.height > arrAlienBullets[a].y 
+             && player.y < arrAlienBullets[a].y +8) {
+            if(player.alive === true) {
+                playerHealth -= 1 }
+             if (playerHealth === 2) {
+                 healthDisplay.innerHTML = "Lives: ❤❤"
+             } else if (playerHealth === 1) {
+                healthDisplay.innerHTML = "Lives: ❤"
+             }
+             arrAlienBullets.splice(a,1)
+             if(player.alive === true && playerHealth >= 1) {
+                 player.alive = false
+             setTimeout(damageAnimation, 120) 
+            }
+        }
+    }
+}
 
 
 
@@ -250,10 +358,16 @@ function rePaint() {
     arrBullets.forEach(function (par) {
         par.render()
     })
+    arrAlienBullets.forEach(function (par) {
+        par.render()
+    })
     boundaries()
     changeDirection()
     alienBoom()
     scoreUpdate()
     playerBoom()
+    playerDamage()
+    playerDeath()
+    console.log(playerHealth)
 }
 
