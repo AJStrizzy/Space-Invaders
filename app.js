@@ -38,7 +38,7 @@ document.getElementById('game-start').addEventListener('click', function() {
     setTimeout(bgMusic, 1250)
     startButton.style.fontSize = "medium"
     startButton.innerHTML = "Defeat the alien horde!"
-        setInterval(fire, 2000)
+        setInterval(fire, 1300)
     })
 // }
 
@@ -101,7 +101,7 @@ class Aliens {
         this.width = width
         this.height = height
         this.alive = true
-        this.speed = .45  //.45
+        this.speed = .45//.45
     }
     
     render() {
@@ -131,7 +131,7 @@ class AlienBullets {
         this.color = color
         this.width = width
         this.height = height
-        this.speed = 2
+        this.speed = 2.3
         this.alive = true
     }
     render() {
@@ -256,7 +256,7 @@ document.addEventListener('keydown', function(evt) {
         const bullet = new Bullets(player.x - 1 + (player.width/2), player.y - 5, 'white', 3.5, 16)
         arrBullets.push(bullet)
         fireStatus = !fireStatus
-        setTimeout(fireReady, 350);
+        setTimeout(fireReady, .01); //350
         fireSound.play()
     }
 }) 
@@ -332,17 +332,17 @@ function playerDamage() {
              && player.x + player.width > arrAlienBullets[a].x
              && player.y + player.height > arrAlienBullets[a].y 
              && player.y < arrAlienBullets[a].y +8) {
-            if(player.alive === true) {
+            if(player.alive === true && gmLive === 1) {
                 playerHealth -= 1 }
-             if (playerHealth === 2) {
+             if (playerHealth === 2 && gmLive === 1) {
                 healthDisplay.innerHTML = "❤ ❤"
                 damageSound.play()
-             } else if (playerHealth === 1) {
+             } else if (playerHealth === 1 && gmLive ===1) {
                 healthDisplay.innerHTML = "❤"
                 damageSound.play()
              }
              arrAlienBullets.splice(a,1)
-             if(player.alive === true && playerHealth >= 1) {
+             if(player.alive === true && playerHealth >= 1 && gmLive === 1) {
                  player.alive = false
              setTimeout(damageAnimation, 120) 
             }
