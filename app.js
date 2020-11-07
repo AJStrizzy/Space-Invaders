@@ -10,12 +10,19 @@ const gameWinSound = document.getElementById('win-sound');
 const backSound = document.getElementById('back-sound')
 const damageSound = document.getElementById('player-damage')
 const alienShooting = document.getElementById("enemy-sound")
-// const bg1 = document.getElementById('bg1')
-// const bg2 = document.getElementById('bg2')
-// const bg3 = document.getElementById('bg3')
-// const bg4 = document.getElementById('bg4')
-// const bg5 = document.getElementById('bg5')
 
+
+let alienFireRate = 1300
+let playerFireRate = 500
+let points = 50
+let level = 1
+let levelStatus = 'Next Level'
+let yspeed = 0
+let alienSpeed = .5
+let alienWidth = 33
+let alienHeight = 17
+let changeDirectionx1 = 490
+let changeDirectionx2 = 25
 
 const bg1 = 'bg1.jpg'
 const bg2 = 'bg2.jpg'
@@ -34,6 +41,10 @@ game.height = height.replace("px", "")
 game.width = width.replace("px", "")
 const ctx = game.getContext('2d');
 let counter = 0
+let alienBulletX = 14
+let alienBulletY = 12
+let alienBulletHeight = 8
+let alienBulletWidth = 3
 
 // function drawBgImg(img) {
 //     let bgImg = new Image();
@@ -81,37 +92,139 @@ function bgMusic() {
 }
 
 
-//restart button
-
 
 
 // Start Game
-document.getElementById('game-start').addEventListener('click', function() {
-    // if(document.getElementById("game-start").innerText === "Start Game") {
-    setInterval(rePaint, 1000/60)
+
+
+
+document.getElementById('game-start').addEventListener('click', function(){
+    if(document.getElementById('game-start').textContent === 'Start Game') {
+        startGame()
+    } else if (document.getElementById('game-start').textContent === 'Play Again') {
+        reset()
+    } else if (document.getElementById('game-start').textContent === 'Next Level' && level <= 2) {
+        levelUp()
+    } else if (document.getElementById('game-start').textContent === 'Next Level' && level === 3) {
+        bossLevel()
+    }
+    })
+
+function startGame () {
+    clearInterval(interval)
+    alienFireRate = 1300
+    alienSpeed = .50
+    interval()
     startSound.play()
     setTimeout(bgMusic, 1250)
     startButton.style.fontSize = "medium"
-    startButton.innerHTML = "Defeat the alien horde!"
-            setInterval(fire, 1300) 
-    })
-// }
+    startButton.innerHTML = "Level " + level
+            setInterval(fire, alienFireRate) 
+    }
 
-// document.getElementById('top-left').addEventListener('click', function() {
 
-//     gmLive = 1
-//     arrAliens = 0
-//     player.alive = false
-//     arrAlienBullets = 0
-//     arrBullets = 0
-//     setInterval(rePaint, 1000/60)
-//     startSound.play()
-//     setTimeout(bgMusic, 1250)
-//     startButton.style.fontSize = "medium"
-//     startButton.innerHTML = "Defeat the alien horde!"
-//             setInterval(fire, 1300) 
 
-// })
+function reset() {
+    clearInterval(interval)
+    alienFireRate = 1300
+    alienSpeed = .50
+    gmLive = 1
+    winSoundCheck = 1
+    player.alive = true
+    player.yspeed = 0
+    player.x = 247
+    player.y = 350
+    playerHealth = 3
+    startScore = 0
+    score.innerHTML = "Score:" + startScore
+    healthDisplay.innerHTML = "❤ ❤ ❤"
+    arrAliens.splice(0, arrAliens.length)
+    arrAlienBullets.splice(0, arrAlienBullets.length)
+    arrBullets.splice(0, arrBullets.length)
+    
+    for (let row = 0; row < 5; row++) {
+    for(let col = 0; col < 10; col++) {
+        const alien = new Aliens (
+            col * 45 + 46, row * 27 + 25, 33,17
+        )
+        arrAliens.push(alien)
+        }
+    }    
+    startSound.play()
+    setTimeout(bgMusic, 1250)
+    startButton.style.fontSize = "medium"
+    startButton.innerHTML = "Level " + level
+            
+}
+
+
+function levelUp() {
+    clearInterval(interval)
+    gameWinSound.pause()
+    gmLive = 1
+    winSoundCheck = 1
+    player.alive = true
+    player.yspeed = 0
+    player.x = 247
+    player.y = 350
+    alienSpeed += .20
+    alienFireRate -= 300
+    points += 50
+    level += 1
+    score.innerHTML = "Score:" + startScore
+    arrAliens.splice(0, arrAliens.length)
+    arrAlienBullets.splice(0, arrAlienBullets.length)
+    arrBullets.splice(0, arrBullets.length)
+    
+    for (let row = 0; row < 5; row++) {
+    for(let col = 0; col < 10; col++) {
+        const alien = new Aliens (
+            col * 45 + 46, row * 27 + 25, 33,17
+        )
+        arrAliens.push(alien)
+        }
+    }
+    startSound.play()
+    setTimeout(bgMusic, 1250)
+    startButton.style.fontSize = "medium"
+    startButton.innerHTML = "Level " + level
+            
+}
+
+function bossLevel() {
+    clearInterval(interval)
+    gameWinSound.pause()
+    gmLive = 1
+    winSoundCheck = 1
+    player.alive = true
+    player.yspeed = 0
+    player.x = 247
+    player.y = 350
+    alienSpeed = 3
+    alienFireRate = 250
+    alienBulletHeight = 24
+    alienBulletWidth = 10
+    alienBulletX = 160
+    alienBulletY = 160
+    alienWidth = 350
+    alienHeight = 185
+    changeDirectionx1 = 250
+    points += 50
+    level += 1
+    score.innerHTML = "Score:" + startScore
+    arrAliens.splice(0, arrAliens.length)
+    arrAlienBullets.splice(0, arrAlienBullets.length)
+    arrBullets.splice(0, arrBullets.length)
+    
+    for (let row = 0; row < 1; row++) {
+    for(let col = 0; col < 1; col++) {
+        const alien = new Aliens (
+            col * 45 + 200, row * 27 + 30, 350, 185
+        )
+        arrAliens.push(alien)
+        }
+}
+}
 
 
 
@@ -123,7 +236,7 @@ class Sprite {
         this.width = width
         this.height = height
         this.speed = 0
-        this.yspeed = 0
+        this.yspeed = yspeed
         this.alive = true
     }
 
@@ -173,7 +286,7 @@ class Aliens {
         this.width = width
         this.height = height
         this.alive = true
-        this.speed = .5
+        this.speed = alienSpeed
         this.yspeed = 0
     }
     
@@ -239,7 +352,7 @@ class AlienBullets {
         };
         const bottomAliens = getBottomAliens();
         const randomAlien = getRandomAlien(bottomAliens);
-        const alienBullet = new AlienBullets(randomAlien.x + 14, randomAlien.y + 12, 'red', 3, 8)       
+        const alienBullet = new AlienBullets(randomAlien.x + alienBulletX, randomAlien.y + alienBulletY, 'red', alienBulletWidth, alienBulletHeight)       
         // if (gmLive === 1) {
             arrAlienBullets.push(alienBullet)
             alienShooting.play()
@@ -255,12 +368,12 @@ class AlienBullets {
 //Set up alien movement pattern
 function changeDirection () {
     arrAliens.forEach(function(alien) {
-    if (alien.x >= 490) {
+    if (alien.x >= changeDirectionx1) {
         arrAliens.forEach(function(a) {
             a.speed *= -1
             a.y += 10 //8
             a.x -= 2 
-        }) } else if (alien.x <= 25) {
+        }) } else if (alien.x <= changeDirectionx2) {
         arrAliens.forEach(function(a) {
             a.speed *= -1
             a.y += 10
@@ -279,7 +392,7 @@ function scoreUpdate() {
     if(arrAliens.length === 0) {
         score.innerHTML = "YOU WIN!"
         startButton.style.fontSize = "large"
-        startButton.innerHTML = "Play Again!"
+        startButton.innerHTML = levelStatus
         player.yspeed -= 1
         player.speed = 0
         backSound.pause()
@@ -334,7 +447,7 @@ document.addEventListener('keydown', function(evt) {
         const bullet = new Bullets(player.x - 1 + (player.width/2), player.y - 5, 'white', 3.5, 16)
         arrBullets.push(bullet)
         fireStatus = !fireStatus
-        setTimeout(fireReady, 500);
+        setTimeout(fireReady, playerFireRate);
         fireSound.play()
     }
 }) 
@@ -359,7 +472,7 @@ function alienBoom() {
                 && arrBullets[b].y + 17 > arrAliens[a].y) {
                 arrAliens.splice(a,1)
                 arrBullets.splice(b,1)
-                startScore += 50
+                startScore += points
                 enemyHitSound.pause()
                 setTimeout(alienSound, 50)
             }
@@ -371,10 +484,10 @@ function alienBoom() {
 let gameSoundCheck = 1
 function playerBoom() {
     for(a = 0; a < arrAliens.length; a++) {
-           if(player.x < arrAliens[a].x + 33  
+           if(player.x < arrAliens[a].x + alienWidth  
                 && player.x + player.width > arrAliens[a].x
                 && player.y + player.height > arrAliens[a].y 
-                && player.y < arrAliens[a].y +17 && gmLive === 1) {
+                && player.y < arrAliens[a].y + alienHeight && gmLive === 1) {
                 gameOver()
                 player.yspeed -= 1
                 player.speed = 0
@@ -443,6 +556,9 @@ function playerDamage() {
         }
     }
 }
+function interval() {
+    setInterval(rePaint, 1000/60)
+}
 
 //refreshes and constantly updates all relevant functions
 
@@ -469,7 +585,7 @@ function rePaint() {
     })
     }
 
-    console.log(arrAlienBullets)
+
     
     bulletBoundaries()
     boundaries()
