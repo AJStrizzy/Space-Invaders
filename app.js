@@ -274,6 +274,7 @@ function scoreUpdate() {
         startButton.style.fontSize = "large"
         startButton.innerHTML = "Play Again!"
         player.yspeed -= 1
+        player.speed = 0
         backSound.pause()
         if(winSoundCheck === 1){
         gameWinSound.play()
@@ -370,6 +371,7 @@ function playerBoom() {
                 && player.y < arrAliens[a].y +17 && gmLive === 1) {
                 gameOver()
                 player.yspeed -= 1
+                player.speed = 0
                 if(gameSoundCheck === 1) {
                     gameOverSound.play()
                     gameSoundCheck *= -1
