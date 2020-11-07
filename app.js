@@ -10,12 +10,18 @@ const gameWinSound = document.getElementById('win-sound');
 const backSound = document.getElementById('back-sound')
 const damageSound = document.getElementById('player-damage')
 const alienShooting = document.getElementById("enemy-sound")
-const bg1 = document.getElementById('bg1')
-const bg2 = document.getElementById('bg2')
-const bg3 = document.getElementById('bg3')
-const bg4 = document.getElementById('bg4')
-const bg5 = document.getElementById('bg5')
+// const bg1 = document.getElementById('bg1')
+// const bg2 = document.getElementById('bg2')
+// const bg3 = document.getElementById('bg3')
+// const bg4 = document.getElementById('bg4')
+// const bg5 = document.getElementById('bg5')
 
+
+const bg1 = 'bg1.jpg'
+const bg2 = 'bg2.jpg'
+const bg3 = 'bg3.jpg'
+const bg4 = 'bg4.jpg'
+const bg5 = 'bg5.jpg'
 
 
 const image1 = document.getElementById('user');
@@ -74,7 +80,7 @@ function bgMusic() {
     backSound.play()
 }
 
-//backgroung bug
+
 //restart button
 
 
@@ -398,6 +404,18 @@ function playerDeath() {
     }
 }
 
+function bulletBoundaries() {
+    for( let b = 0; b < arrBullets.length; b++) {
+        if(arrBullets[b].y <= -10) {
+            arrBullets.splice(b,1)
+        }
+    }
+    for( let a = 0; a < arrAlienBullets.length; a++) {
+        if(arrAlienBullets[a].y >= 420 ) {
+            arrAlienBullets.splice(a,1)
+        }
+    }
+}
 function damageAnimation() {
     player.alive = true
 }
@@ -430,6 +448,7 @@ function playerDamage() {
 
 function rePaint() {
     ctx.clearRect(0, 0, game.width, game.height)
+    // background()
     
     if(player.alive === true) {
         player.render()
@@ -447,8 +466,8 @@ function rePaint() {
         par.render()
     })
 
-    // background()
     
+    bulletBoundaries()
     boundaries()
     changeDirection()
     alienBoom()
