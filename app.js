@@ -173,7 +173,7 @@ class Aliens {
         this.width = width
         this.height = height
         this.alive = true
-        this.speed = .45
+        this.speed = .5
         this.yspeed = 0
     }
     
@@ -216,6 +216,7 @@ class AlienBullets {
     
 
     function fire() {
+        if(gmLive === 1) {
         const getBottomAliens = () => {
             const bottomAliens = [];
             let groupedByX = {};
@@ -239,7 +240,7 @@ class AlienBullets {
         const bottomAliens = getBottomAliens();
         const randomAlien = getRandomAlien(bottomAliens);
         const alienBullet = new AlienBullets(randomAlien.x + 14, randomAlien.y + 12, 'red', 3, 8)       
-        if (gmLive === 1) {
+        // if (gmLive === 1) {
             arrAlienBullets.push(alienBullet)
             alienShooting.play()
         }
@@ -296,7 +297,6 @@ function gameOver () {
    if(player.alive === true){
     score.innerHTML = "YOU LOSE!"
     startButton.innerHTML = "Play Again"
-    // player.alive = false
     backSound.pause()
     gmLive *= -1
     healthDisplay.style.fontSize = "Large"
@@ -453,19 +453,23 @@ function rePaint() {
     if(player.alive === true) {
         player.render()
     }
-
+    if(arrAliens !== 0) {
     arrAliens.forEach(function (par){
         par.render()
     })
-
+}
+    if(arrBullets !== 0){
     arrBullets.forEach(function (par) {
         par.render()
     })
-
+}
+    if(arrAlienBullets !== 0) {
     arrAlienBullets.forEach(function (par) {
         par.render()
     })
+    }
 
+    console.log(arrAlienBullets)
     
     bulletBoundaries()
     boundaries()
