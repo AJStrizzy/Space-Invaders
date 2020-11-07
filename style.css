@@ -12,7 +12,6 @@ html,body {
   
   h2 {
     font-family: 'Press Start 2P', monospace;
-    /* font-family: monospace; */
     color: green;
   }
   
@@ -85,4 +84,26 @@ html,body {
 }
 
   
-  
+#game-lives {
+  color: red;
+}
+
+#bg1 {
+  display: none;
+}
+
+#bg2 {
+  display: none;
+}
+
+#bg3 {
+  display: none;
+}
+
+#bg4 {
+  display: none;
+}
+
+#bg5 {
+  display: none;
+}
