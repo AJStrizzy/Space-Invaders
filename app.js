@@ -11,9 +11,10 @@ const backSound = document.getElementById('back-sound')
 const damageSound = document.getElementById('player-damage')
 const alienShooting = document.getElementById("enemy-sound")
 
-
+// fix button glitch after beating boss
+// add health points to boss
 let alienFireRate = 1300
-let playerFireRate = 500
+let playerFireRate = 0
 let points = 50
 let level = 1
 let levelStatus = 'Next Level'
@@ -23,7 +24,7 @@ let alienWidth = 33
 let alienHeight = 17
 let changeDirectionx1 = 490
 let changeDirectionx2 = 25
-
+let bossHealth = 20
 const bg1 = 'bg1.jpg'
 const bg2 = 'bg2.jpg'
 const bg3 = 'bg3.jpg'
@@ -101,12 +102,14 @@ function bgMusic() {
 document.getElementById('game-start').addEventListener('click', function(){
     if(document.getElementById('game-start').textContent === 'Start Game') {
         startGame()
-    } else if (document.getElementById('game-start').textContent === 'Play Again') {
+    } else if (document.getElementById('game-start').textContent === 'Try Again') {
         reset()
-    } else if (document.getElementById('game-start').textContent === 'Next Level' && level <= 2) {
+    } else if (document.getElementById('game-start').textContent === 'Next Level' && level <= 3) {
         levelUp()
-    } else if (document.getElementById('game-start').textContent === 'Next Level' && level === 3) {
+    } else if (document.getElementById('game-start').textContent === 'Next Level' && level === 4) {
         bossLevel()
+    } else if (document.getElementById('game-start').textContent === 'Play Again' && level === 5) {
+        playAgain()
     }
     })
 
@@ -130,6 +133,7 @@ function reset() {
     alienSpeed = .50
     gmLive = 1
     winSoundCheck = 1
+    level = 1
     player.alive = true
     player.yspeed = 0
     player.x = 247
@@ -193,6 +197,9 @@ function levelUp() {
 
 function bossLevel() {
     clearInterval(interval)
+    if (bossHealth === 0) {
+        bossDefeated()
+    }
     gameWinSound.pause()
     gmLive = 1
     winSoundCheck = 1
@@ -200,6 +207,7 @@ function bossLevel() {
     player.yspeed = 0
     player.x = 247
     player.y = 350
+    startButton.innerHTML = "Final Level"
     alienSpeed = 3
     alienFireRate = 250
     alienBulletHeight = 24
@@ -208,7 +216,7 @@ function bossLevel() {
     alienBulletY = 160
     alienWidth = 350
     alienHeight = 185
-    changeDirectionx1 = 250
+    changeDirectionx1 = 220
     points += 50
     level += 1
     score.innerHTML = "Score:" + startScore
@@ -224,6 +232,40 @@ function bossLevel() {
         arrAliens.push(alien)
         }
 }
+}
+
+function playAgain() {
+    clearInterval(interval)
+    alienFireRate = 1300
+    startScore = 0
+    alienSpeed = .50
+    gmLive = 1
+    winSoundCheck = 1
+    level = 1
+    player.alive = true
+    player.yspeed = 0
+    player.x = 247
+    player.y = 350
+    playerHealth = 3
+    startScore = 0
+    score.innerHTML = "Score:" + startScore
+    healthDisplay.innerHTML = "❤ ❤ ❤"
+    arrAlienBullets.splice(0, arrAlienBullets.length)
+    arrBullets.splice(0, arrBullets.length)
+    
+    for (let row = 0; row < 5; row++) {
+    for(let col = 0; col < 10; col++) {
+        const alien = new Aliens (
+            col * 45 + 46, row * 27 + 25, 33,17
+        )
+        arrAliens.push(alien)
+        }
+    }    
+    startSound.play()
+    setTimeout(bgMusic, 1250)
+    startButton.style.fontSize = "medium"
+    startButton.innerHTML = "Level " + level
+            
 }
 
 
@@ -353,11 +395,12 @@ class AlienBullets {
         const bottomAliens = getBottomAliens();
         const randomAlien = getRandomAlien(bottomAliens);
         const alienBullet = new AlienBullets(randomAlien.x + alienBulletX, randomAlien.y + alienBulletY, 'red', alienBulletWidth, alienBulletHeight)       
-        // if (gmLive === 1) {
+        if (gmLive === 1) {
             arrAlienBullets.push(alienBullet)
             alienShooting.play()
         }
     }
+}
 
     
 
@@ -409,7 +452,7 @@ function scoreUpdate() {
 function gameOver () {
    if(player.alive === true){
     score.innerHTML = "YOU LOSE!"
-    startButton.innerHTML = "Play Again"
+    startButton.innerHTML = "Try Again"
     backSound.pause()
     gmLive *= -1
     healthDisplay.style.fontSize = "Large"
@@ -469,15 +512,33 @@ function alienBoom() {
             if(arrBullets[b].x < arrAliens[a].x + 33
                 && arrBullets[b].x + 3.5 > arrAliens[a].x
                 && arrBullets[b].y < arrAliens[a].y + 21
-                && arrBullets[b].y + 17 > arrAliens[a].y) {
+                && arrBullets[b].y + 17 > arrAliens[a].y && level < 5) {
                 arrAliens.splice(a,1)
                 arrBullets.splice(b,1)
                 startScore += points
                 enemyHitSound.pause()
                 setTimeout(alienSound, 50)
+                } else if (arrBullets[b].x < arrAliens[a].x + 350
+                    && arrBullets[b].x + 3.5 > arrAliens[a].x
+                    && arrBullets[b].y < arrAliens[a].y + 185
+                    && arrBullets[b].y + 17 > arrAliens[a].y && level === 5) {
+                    bossHealth -= 1
+                    arrBullets.splice(b,1)
+                    startScore += points
+                    enemyHitSound.pause()
+                    setTimeout(alienSound, 50)
+                    
+                
+                    
+                }
             }
         }
     }
+function bossDefeated() {
+    
+        startButton.innerHTML = 'Aliens Exterminated'
+        arrAliens.splice[a,1]
+    
 }
 
 //sets up lost game conditions
