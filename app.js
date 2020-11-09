@@ -20,7 +20,7 @@ const bossSound = document.getElementById('bossSound')
 let bossShooting = 1
 let alienRender = 1
 let alienFireRate = 1300
-let playerFireRate = 350
+let playerFireRate = 0
 let points = 50
 let level = 1
 let levelStatus = 'Next Level'
@@ -152,6 +152,7 @@ function reset() {
     clearInterval(interval)
     alienFireRate = 1300
     bossHealth = 20
+    bossShooting = 1
     alienImage = image2
     alienSpeed = .50
     gmLive = 1
@@ -276,7 +277,9 @@ function bossLevel() {
 function playAgain() {
     clearInterval(interval)
     alienFireRate = 1300
+    bossHealth = 20
     alienImage = image2
+    bossShooting = 1
     startScore = 0
     alienSpeed = .50
     gmLive = 1
