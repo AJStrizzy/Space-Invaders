@@ -10,12 +10,15 @@ const gameWinSound = document.getElementById('win-sound');
 const backSound = document.getElementById('back-sound')
 const damageSound = document.getElementById('player-damage')
 const alienShooting = document.getElementById("enemy-sound")
+const healthSound = document.getElementById("healthsound")
+const boostUpSound = document.getElementById('boostup')
+const boostDownSound = document.getElementById("boostdown")
 
 
 // fix button glitch after beating boss
 // add health points to boss
 let alienFireRate = 1300
-let playerFireRate = 0
+let playerFireRate = 350
 let points = 50
 let level = 1
 let levelStatus = 'Next Level'
@@ -32,9 +35,14 @@ const bg3 = 'bg3.jpg'
 const bg4 = 'bg4.jpg'
 const bg5 = 'bg5.jpg'
 
-
+const boostImage = document.getElementById('boostboost')
+const heartImage = document.getElementById('heart')
 const image1 = document.getElementById('user');
-const image2 = document.getElementById('enemy');
+const image2 = document.getElementById('enemy1');
+const image3 = document.getElementById('enemy2')
+const image4 = document.getElementById('enemy3')
+const image5 = document.getElementById('enemy4')
+const image6 = document.getElementById('enemy5')
 const computedStyle = getComputedStyle(game);
 const height = computedStyle.height;
 const width = computedStyle.width;
@@ -129,7 +137,11 @@ function startGame () {
     setTimeout(bgMusic, 1250)
     startButton.style.fontSize = "medium"
     startButton.innerHTML = "Level " + level
-            setInterval(fire, alienFireRate) 
+    if (gmLive === 1) {
+        setInterval(fire, alienFireRate) 
+    setInterval(health, 15000)
+    setInterval(boost, 23000)
+    }
     }
 
 
@@ -137,6 +149,7 @@ function startGame () {
 function reset() {
     clearInterval(interval)
     alienFireRate = 1300
+    alienImage = image2
     alienSpeed = .50
     gmLive = 1
     winSoundCheck = 1
@@ -172,13 +185,13 @@ function reset() {
 function levelUp() {
     clearInterval(interval)
     gameWinSound.pause()
-    // if(level === 2) {
-    //     alienImage = image3
-    // } else if (level === 3) {
-    //     alienImage = image4 
-    // } else if( level ===4) {
-    //     alienImage = image5
-    // }
+    if(level === 1) {
+        alienImage = image3
+    } else if (level === 2) {
+        alienImage = image4 
+    } else if( level ===3) {
+        alienImage = image5
+    }
         
         
     
@@ -190,7 +203,7 @@ function levelUp() {
     player.yspeed = 0
     player.x = 247
     player.y = 350
-    alienSpeed += .20
+    alienSpeed += .15
     alienFireRate -= 300
     points += 50
     level += 1
@@ -202,7 +215,7 @@ function levelUp() {
     for (let row = 0; row < 5; row++) {
     for(let col = 0; col < 10; col++) {
         const alien = new Aliens (
-            col * 45 + 46, row * 27 + 25, 33,17
+            col * 45 + 46, row * 27 + 25, 27,20
         )
         arrAliens.push(alien)
         }
@@ -218,7 +231,7 @@ function bossLevel() {
     clearInterval(interval)
    
     
-    alienImage = image2
+    alienImage = image6
     gameWinSound.pause()
     gmLive = 1
     winSoundCheck = 1
@@ -256,6 +269,7 @@ function bossLevel() {
 function playAgain() {
     clearInterval(interval)
     alienFireRate = 1300
+    alienImage = image2
     startScore = 0
     alienSpeed = .50
     gmLive = 1
@@ -640,6 +654,114 @@ function playerDamage() {
         }
     }
 }
+const arrBoost = []
+class Boosts {
+    constructor(x, y, width, height) {
+        this.x = x
+        this.y = y
+        this.width = width
+        this.height = height
+        this.alive = true
+        this.speed = 1
+    }
+    
+    render() {
+        ctx.drawImage(boostImage, this.x,  this.y += this.speed, this.width, this.height) 
+    }
+
+}
+function boost() {
+const randBoost = 5 + (parseInt(Math.random() * 490))
+
+    const boost = new Boosts(randBoost, 0, 13,13)       
+        if (gmLive === 1) {
+            arrBoost.push(boost)
+        }
+    }
+
+
+
+
+
+const arrHearts = []
+class Hearts {
+    constructor(x, y, width, height) {
+        this.x = x
+        this.y = y
+        this.width = width
+        this.height = height
+        this.alive = true
+        this.speed = 1
+    }
+    
+    render() {
+        ctx.drawImage(heartImage, this.x,  this.y += this.speed, this.width, this.height) 
+    }
+
+}
+function health() {
+const randHeart = 5 + (parseInt(Math.random() * 490))
+
+    const heart = new Hearts(randHeart, 0, 13,13)       
+        if (gmLive === 1) {
+            arrHearts.push(heart)
+        }
+    }
+
+function healthUp() {
+    for(a = 0; a < arrHearts.length; a++) {
+        if(player.x < arrHearts[a].x + 13 
+             && player.x + player.width > arrHearts[a].x
+             && player.y + player.height > arrHearts[a].y 
+             && player.y < arrHearts[a].y + 13) {
+            if(player.alive === true && gmLive === 1 && playerHealth < 3) {
+                playerHealth += 1 }
+             if (playerHealth === 3 && gmLive === 1) {
+                healthDisplay.innerHTML = "❤ ❤ ❤"
+                healthSound.play()
+             } else if (playerHealth === 2 && gmLive ===1) {
+                healthDisplay.innerHTML = "❤ ❤"
+                healthSound.play()
+             }
+             arrHearts.splice(a,1)
+             if(player.alive === true && playerHealth >= 1 && gmLive === 1) {
+                 player.alive = false
+             setTimeout(damageAnimation, 120) 
+            }
+        }
+    }
+}
+
+function boostSound() {
+    boostDownSound.play()
+}
+
+function boostUp() {
+    for(a = 0; a < arrBoost.length; a++) {
+        if(player.x < arrBoost[a].x + 13 
+             && player.x + player.width > arrBoost[a].x
+             && player.y + player.height > arrBoost[a].y 
+             && player.y < arrBoost[a].y +13) {
+                arrBoost.splice(a,1)
+                playerFireRate = 0
+                setTimeout(speedUp, 5000)
+                boostUpSound.play()
+                setTimeout(boostSound, 5000)
+                if(player.alive === true && playerHealth >= 1 && gmLive === 1) {
+                    player.alive = false
+                setTimeout(damageAnimation, 120) 
+                }
+            }
+        }
+    }
+
+function speedUp() {
+    playerFireRate = 350
+}
+ 
+
+
+
 function interval() {
     setInterval(rePaint, 1000/60)
 }
@@ -669,9 +791,23 @@ function rePaint() {
         par.render()
     })
     }
+    if(arrHearts !== 0) {
+        arrHearts.forEach(function (par){
+            par.render()
+        })
+    }
 
+    if(arrBoost !== 0) {
+        arrBoost.forEach(function (par){
+            par.render()
+        })
+    }
 
     
+    
+
+    healthUp()
+    boostUp()
     bulletBoundaries()
     boundaries()
     changeDirection()
