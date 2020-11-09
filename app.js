@@ -13,12 +13,13 @@ const alienShooting = document.getElementById("enemy-sound")
 const healthSound = document.getElementById("healthsound")
 const boostUpSound = document.getElementById('boostup')
 const boostDownSound = document.getElementById("boostdown")
+const bossSound = document.getElementById('bossSound')
 
 
 // fix button glitch after beating boss
 // add health points to boss
 let alienFireRate = 1300
-let playerFireRate = 350
+let playerFireRate = 0
 let points = 50
 let level = 1
 let levelStatus = 'Next Level'
@@ -195,7 +196,6 @@ function levelUp() {
         
         
     
-
     
     gmLive = 1
     winSoundCheck = 1
@@ -230,7 +230,6 @@ function levelUp() {
 function bossLevel() {
     clearInterval(interval)
    
-    
     alienImage = image6
     gameWinSound.pause()
     gmLive = 1
@@ -540,6 +539,9 @@ function fireReady() {
 function alienSound() {
     enemyHitSound.play()
 }
+function bssSound() {
+    bossSound.play()
+}
 
 function alienBoom() {
     for(a = 0; a < arrAliens.length; a++) {
@@ -571,7 +573,7 @@ function alienBoom() {
                         startScore += points
                         levelStatus = "Swarm Defeated"
                         enemyHitSound.pause()
-                        setTimeout(alienSound, 50)
+                        setTimeout(bssSound, 50)
                         }
             }
         }
