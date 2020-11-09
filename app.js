@@ -151,11 +151,19 @@ function startGame () {
 function reset() {
     clearInterval(interval)
     alienFireRate = 1300
+    bossHealth = 20
     alienImage = image2
     alienSpeed = .50
     gmLive = 1
     winSoundCheck = 1
     level = 1
+    alienBulletHeight = 8
+    alienBulletWidth = 3
+    alienBulletX = 14
+    alienBulletY = 12
+    alienWidth = 33
+    alienHeight = 17
+    changeDirectionx1 = 490
     player.alive = true
     player.yspeed = 0
     player.x = 247
@@ -167,7 +175,6 @@ function reset() {
     arrAliens.splice(0, arrAliens.length)
     arrAlienBullets.splice(0, arrAlienBullets.length)
     arrBullets.splice(0, arrBullets.length)
-    
     for (let row = 0; row < 5; row++) {
     for(let col = 0; col < 10; col++) {
         const alien = new Aliens (
@@ -240,7 +247,6 @@ function bossLevel() {
     player.x = 247
     player.y = 350
     startButton.innerHTML = "Final Level"
-    alienSpeed = 3
     alienFireRate = 250
     alienBulletHeight = 24
     alienBulletWidth = 10
@@ -248,7 +254,8 @@ function bossLevel() {
     alienBulletY = 160
     alienWidth = 350
     alienHeight = 185
-    changeDirectionx1 = 220
+    alienSpeed = 2
+    changeDirectionx1 = 205
     points += 50
     level += 1
     score.innerHTML = "Score:" + startScore
@@ -263,7 +270,7 @@ function bossLevel() {
         )
         arrAliens.push(alien)
         }
-}
+    }   
 }
 
 function playAgain() {
@@ -275,6 +282,13 @@ function playAgain() {
     gmLive = 1
     winSoundCheck = 1
     level = 1
+    alienBulletHeight = 8
+    alienBulletWidth = 3
+    alienBulletX = 14
+    alienBulletY = 12
+    alienWidth = 33
+    alienHeight = 17
+    changeDirectionx1 = 490
     player.alive = true
     player.yspeed = 0
     player.x = 247
@@ -429,7 +443,7 @@ class AlienBullets {
         const bottomAliens = getBottomAliens();
         const randomAlien = getRandomAlien(bottomAliens);
         const alienBullet = new AlienBullets(randomAlien.x + alienBulletX, randomAlien.y + alienBulletY, 'red', alienBulletWidth, alienBulletHeight)       
-        if (gmLive === 1) {
+        if (gmLive === 1 && bossHealth > 0) {
             arrAlienBullets.push(alienBullet)
             alienShooting.play()
         }
@@ -466,8 +480,8 @@ function scoreUpdate() {
    if(gmLive === 1) {
        score.innerHTML = "Score:" + startScore
    }
-    if(arrAliens.length === 0) {
-        score.innerHTML = "YOU WIN!"
+    if(arrAliens.length === 0 && bossHealth === 20) {
+        score.innerHTML = "Level Clear!"
         startButton.style.fontSize = "large"
         startButton.innerHTML = levelStatus
         player.yspeed -= 1
@@ -478,9 +492,10 @@ function scoreUpdate() {
         winSoundCheck *= -1
         gmLive *= -1
         arrAlienBullets[a] = 0
-         }
+         
         }
     }
+}
  
 
 // Provides losing game condition
@@ -646,7 +661,7 @@ function alienBoom() {
         arrAliens.splice(0,1)
     }
     function gameWinStatus() {
-        levelStatus = "Swarm Defeated"
+        levelStatus = "Play Again"
     }
     
 
