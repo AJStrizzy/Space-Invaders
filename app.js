@@ -17,7 +17,8 @@ const bossSound = document.getElementById('bossSound')
 
 
 // fix button glitch after beating boss
-// add health points to boss
+let bossShooting = 1
+let alienRender = 1
 let alienFireRate = 1300
 let playerFireRate = 0
 let points = 50
@@ -215,7 +216,7 @@ function levelUp() {
     for (let row = 0; row < 5; row++) {
     for(let col = 0; col < 10; col++) {
         const alien = new Aliens (
-            col * 45 + 46, row * 27 + 25, 27,20
+            col * 45 + 46, row * 27 + 25, 35,20
         )
         arrAliens.push(alien)
         }
@@ -520,7 +521,7 @@ class Bullets {
 let fireStatus = true
 const arrBullets = [];
 document.addEventListener('keydown', function(evt) {
-    if (evt.key === 'a' && fireStatus === true && gmLive === 1|| evt.key === 'A' && fireStatus === true && gmLive === 1) {
+    if (evt.key === 'a' && fireStatus === true && gmLive === 1 && bossShooting === 1|| evt.key === 'A' && fireStatus === true && gmLive === 1 && bossShooting === 1) {
         const bullet = new Bullets(player.x - 1 + (player.width/2), player.y - 5, 'white', 3.5, 16)
         arrBullets.push(bullet)
         fireStatus = !fireStatus
@@ -560,6 +561,8 @@ function alienBoom() {
                     && arrBullets[b].y < arrAliens[a].y + 185
                     && arrBullets[b].y + 17 > arrAliens[a].y && level === 5 && bossHealth > 0) {
                     bossHealth -= 1
+                    alienRender = 0
+                    setTimeout(alienRenderBack, 40)
                     arrBullets.splice(b,1)
                     startScore += points
                     enemyHitSound.pause()
@@ -568,17 +571,84 @@ function alienBoom() {
                         && arrBullets[b].x + 3.5 > arrAliens[a].x
                         && arrBullets[b].y < arrAliens[a].y + 185
                         && arrBullets[b].y + 17 > arrAliens[a].y && level === 5 && bossHealth <= 0) {
-                        arrAliens.splice(a,1)
+                        bossShooting = 0    
+                        alienRender = 0
                         arrBullets.splice(b,1)
+                        alienSpeed *= -1
                         startScore += points
-                        levelStatus = "Swarm Defeated"
-                        enemyHitSound.pause()
-                        setTimeout(bssSound, 50)
+
+
+                        setTimeout(alienRenderBack, 40)
+                        setTimeout(bossAnimation, 80)
+                        setTimeout(alienRenderBack, 120)
+                        setTimeout(bossAnimation, 160)
+                        setTimeout(alienRenderBack, 200)
+                        setTimeout(bossAnimation, 240)
+                        setTimeout(alienRenderBack, 280)
+                        setTimeout(bossAnimation, 320)
+                        setTimeout(alienRenderBack, 360)
+                        setTimeout(bossAnimation, 400)
+                        setTimeout(alienRenderBack, 440)
+                        setTimeout(bossAnimation, 480)
+                        setTimeout(alienRenderBack, 520)
+                        setTimeout(bossAnimation, 560)
+                        setTimeout(alienRenderBack, 600)
+                        setTimeout(bossAnimation, 640)
+                        setTimeout(alienRenderBack, 680)
+                        setTimeout(bossAnimation, 720)
+                        setTimeout(alienRenderBack, 760)
+                        setTimeout(bossAnimation, 800)
+                        setTimeout(alienRenderBack, 840)
+                        setTimeout(bossAnimation, 880)
+                        setTimeout(alienRenderBack, 920)
+                        setTimeout(bossAnimation, 960)
+                        setTimeout(alienRenderBack, 1000)
+                        setTimeout(alienRenderBack, 1040)
+                        setTimeout(bossAnimation, 1080)
+                        setTimeout(alienRenderBack, 1120)
+                        setTimeout(bossAnimation, 1160)
+                        setTimeout(alienRenderBack, 1200)
+                        setTimeout(bossAnimation, 1240)
+                        setTimeout(alienRenderBack, 1280)
+                        setTimeout(bossAnimation, 1320)
+                        setTimeout(alienRenderBack, 1360)
+                        setTimeout(bossAnimation, 1400)
+                        setTimeout(alienRenderBack, 1440)
+                        setTimeout(bossAnimation, 1480)
+                        setTimeout(alienRenderBack, 1520)
+                        setTimeout(bossAnimation, 1560)
+                        setTimeout(alienRenderBack, 1600)
+                        setTimeout(bossAnimation, 1640)
+                        setTimeout(alienRenderBack, 1680)
+                        setTimeout(bossAnimation, 1720)
+                        setTimeout(alienRenderBack, 1760)
+                        setTimeout(bossAnimation, 1800)
+                        setTimeout(alienRenderBack, 1840)
+                        setTimeout(bossAnimation, 1880)
+                        setTimeout(alienRenderBack, 1920)
+                        setTimeout(bossAnimation, 1960)
+                        setTimeout(alienRenderBack, 2000)
+
+                        setTimeout(bossDefeat, 2040)
+                        setTimeout(bssSound, 2040)
+                        setTimeout(gameWinStatus, 2040)
                         }
             }
         }
     }
-
+    function bossAnimation() {
+        alienRender = 0
+    }
+    function alienRenderBack() {
+        alienRender = 1
+    }
+    function bossDefeat() {
+        arrAliens.splice(0,1)
+    }
+    function gameWinStatus() {
+        levelStatus = "Swarm Defeated"
+    }
+    
 
 //sets up lost game conditions
 let gameSoundCheck = 1
@@ -675,7 +745,7 @@ class Boosts {
 function boost() {
 const randBoost = 5 + (parseInt(Math.random() * 490))
 
-    const boost = new Boosts(randBoost, 0, 13,13)       
+    const boost = new Boosts(randBoost, 0, 17,17)       
         if (gmLive === 1) {
             arrBoost.push(boost)
         }
@@ -704,7 +774,7 @@ class Hearts {
 function health() {
 const randHeart = 5 + (parseInt(Math.random() * 490))
 
-    const heart = new Hearts(randHeart, 0, 13,13)       
+    const heart = new Hearts(randHeart, 0, 17,17)       
         if (gmLive === 1) {
             arrHearts.push(heart)
         }
@@ -712,10 +782,10 @@ const randHeart = 5 + (parseInt(Math.random() * 490))
 
 function healthUp() {
     for(a = 0; a < arrHearts.length; a++) {
-        if(player.x < arrHearts[a].x + 13 
+        if(player.x < arrHearts[a].x + 17 
              && player.x + player.width > arrHearts[a].x
              && player.y + player.height > arrHearts[a].y 
-             && player.y < arrHearts[a].y + 13) {
+             && player.y < arrHearts[a].y + 17) {
             if(player.alive === true && gmLive === 1 && playerHealth < 3) {
                 playerHealth += 1 }
              if (playerHealth === 3 && gmLive === 1) {
@@ -740,10 +810,10 @@ function boostSound() {
 
 function boostUp() {
     for(a = 0; a < arrBoost.length; a++) {
-        if(player.x < arrBoost[a].x + 13 
+        if(player.x < arrBoost[a].x + 17 
              && player.x + player.width > arrBoost[a].x
              && player.y + player.height > arrBoost[a].y 
-             && player.y < arrBoost[a].y +13) {
+             && player.y < arrBoost[a].y +17) {
                 arrBoost.splice(a,1)
                 playerFireRate = 0
                 setTimeout(speedUp, 5000)
@@ -778,7 +848,7 @@ function rePaint() {
     if(player.alive === true) {
         player.render()
     }
-    if(arrAliens !== 0) {
+    if(arrAliens !== 0 && alienRender === 1) {
     arrAliens.forEach(function (par){
         par.render()
     })
