@@ -20,7 +20,7 @@ const bossSound = document.getElementById('bossSound')
 let bossShooting = 1
 let alienRender = 1
 let alienFireRate = 1300
-let playerFireRate = 0
+let playerFireRate = 350
 let points = 50
 let level = 1
 let levelStatus = 'Next Level'
@@ -480,7 +480,7 @@ function scoreUpdate() {
    if(gmLive === 1) {
        score.innerHTML = "Score:" + startScore
    }
-    if(arrAliens.length === 0 && bossHealth === 20) {
+    if(arrAliens.length === 0) {
         score.innerHTML = "Level Clear!"
         startButton.style.fontSize = "large"
         startButton.innerHTML = levelStatus
@@ -492,10 +492,9 @@ function scoreUpdate() {
         winSoundCheck *= -1
         gmLive *= -1
         arrAlienBullets[a] = 0
-         
+         }
         }
     }
-}
  
 
 // Provides losing game condition
