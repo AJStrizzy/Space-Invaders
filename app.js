@@ -11,6 +11,7 @@ const backSound = document.getElementById('back-sound')
 const damageSound = document.getElementById('player-damage')
 const alienShooting = document.getElementById("enemy-sound")
 
+
 // fix button glitch after beating boss
 // add health points to boss
 let alienFireRate = 1300
@@ -46,6 +47,7 @@ let alienBulletX = 14
 let alienBulletY = 12
 let alienBulletHeight = 8
 let alienBulletWidth = 3
+let alienImage = image2
 
 // function drawBgImg(img) {
 //     let bgImg = new Image();
@@ -113,6 +115,11 @@ document.getElementById('game-start').addEventListener('click', function(){
     }
     })
 
+
+
+
+    
+
 function startGame () {
     clearInterval(interval)
     alienFireRate = 1300
@@ -165,6 +172,18 @@ function reset() {
 function levelUp() {
     clearInterval(interval)
     gameWinSound.pause()
+    // if(level === 2) {
+    //     alienImage = image3
+    // } else if (level === 3) {
+    //     alienImage = image4 
+    // } else if( level ===4) {
+    //     alienImage = image5
+    // }
+        
+        
+    
+
+    
     gmLive = 1
     winSoundCheck = 1
     player.alive = true
@@ -197,9 +216,9 @@ function levelUp() {
 
 function bossLevel() {
     clearInterval(interval)
-    if (bossHealth === 0) {
-        bossDefeated()
-    }
+   
+    
+    alienImage = image2
     gameWinSound.pause()
     gmLive = 1
     winSoundCheck = 1
@@ -333,10 +352,11 @@ class Aliens {
     }
     
     render() {
-        ctx.drawImage(image2, this.x -= this.speed,  this.y -= this.yspeed, this.width, this.height) 
+        ctx.drawImage(alienImage, this.x -= this.speed,  this.y -= this.yspeed, this.width, this.height) 
     }
 
 }
+
 
 const arrAliens = [];
 for (let row = 0; row < 5; row++) {
@@ -444,9 +464,10 @@ function scoreUpdate() {
         winSoundCheck *= -1
         gmLive *= -1
         arrAlienBullets[a] = 0
+         }
         }
     }
-} 
+ 
 
 // Provides losing game condition
 function gameOver () {
@@ -521,25 +542,27 @@ function alienBoom() {
                 } else if (arrBullets[b].x < arrAliens[a].x + 350
                     && arrBullets[b].x + 3.5 > arrAliens[a].x
                     && arrBullets[b].y < arrAliens[a].y + 185
-                    && arrBullets[b].y + 17 > arrAliens[a].y && level === 5) {
+                    && arrBullets[b].y + 17 > arrAliens[a].y && level === 5 && bossHealth > 0) {
                     bossHealth -= 1
                     arrBullets.splice(b,1)
                     startScore += points
                     enemyHitSound.pause()
                     setTimeout(alienSound, 50)
-                    
-                
-                    
-                }
+                    } else if (arrBullets[b].x < arrAliens[a].x + 350
+                        && arrBullets[b].x + 3.5 > arrAliens[a].x
+                        && arrBullets[b].y < arrAliens[a].y + 185
+                        && arrBullets[b].y + 17 > arrAliens[a].y && level === 5 && bossHealth <= 0) {
+                        arrAliens.splice(a,1)
+                        arrBullets.splice(b,1)
+                        startScore += points
+                        levelStatus = "Swarm Defeated"
+                        enemyHitSound.pause()
+                        setTimeout(alienSound, 50)
+                        }
             }
         }
     }
-function bossDefeated() {
-    
-        startButton.innerHTML = 'Aliens Exterminated'
-        arrAliens.splice[a,1]
-    
-}
+
 
 //sets up lost game conditions
 let gameSoundCheck = 1
@@ -627,6 +650,7 @@ function rePaint() {
     ctx.clearRect(0, 0, game.width, game.height)
     // background()
     
+
     if(player.alive === true) {
         player.render()
     }
