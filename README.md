@@ -1,5 +1,7 @@
 # Space-Invaders
 Shoot down aliens in space
+## How to play on your browser
+Go to ajstrizzy.github.io
 ## Steps to install on local computer
 1. Go to [repo](https://github.com/AJStrizzy/space-invaders) on Github profile
 2. `fork` and `clone` repo
@@ -14,9 +16,37 @@ open index.html
 ```
 
 ```text
+This was my first project done during my software engineering course with General Assembly. This project was done during
+the duration of the 3rd week of the course. During the 1st and 2nd weeks of the course we learned about HTML, CSS and 
+Javascript and how they all interact with eachother. This project was our first attempt at putting what we had learned so 
+far to use, and create something.
+
+I attempted to make a recreation of the classic arcade game, Space Invaders. If anyone reading this isn't familiar with 
+the game, here is a link to what the orginal game was like.
+```
+[Space Invaders Video](https://www.youtube.com/watch?v=D1jZaIPeD5w)
+
+```text
+Since this was my first project ever, there was a lot of trial and error involved and a TON of time put into this. I think 
+I finally got it to where I'm happy to leave it and all the bugs have been worked out. 
+
+If you discover or run into any bugs, please feel free to send me a message through github and let me know. My github username is AJStrizzy. Any feedback is much appreciated.
+
+This was the initial wire frame/ outline for how I wanted the game to come out.
+```
+
+![](WireFrame.png)
+
+
+```text
+Now give it a shot for yourself and see how it all came together!!! 
+
+
+
 Game Instructions:
 
-Safely navigate your space ship through 4 hordes of space aliens to finally reach the alien ship. Defeat the alien ship and save the galaxy!
+Safely navigate your space ship through 4 hordes of space aliens to finally reach the alien ship. 
+Defeat the alien ship and save the galaxy!
 
 Controls:
 Left arrow key to move ship to the left.
@@ -37,10 +67,7 @@ If any of the aliens make it past the player and to the bottom of the screen the
 Powerups:
 Collect hearts to regain lost health. Each heart is worth one health point
 Collect stars to activate a 5 second fire speed increase
-
-
-
-
+```
 
 
 ```html
