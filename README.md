@@ -1,7 +1,5 @@
 # Space-Invaders
 Shoot down aliens in space
-## How to play on your browser
-Go to ajstrizzy.github.io (online hosted version is currently bugged, only playable through cloning to your local system)
 ## Steps to install on local computer
 1. Go to [repo](https://github.com/AJStrizzy/space-invaders) on Github profile
 2. `fork` and `clone` repo
@@ -213,4 +211,9 @@ function rePaint() {
 }
 ```
 Function that sets up entire game. This function is run 60 times per second to constantly update the game screen.
+  
+
+
+
+
   

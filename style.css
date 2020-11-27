@@ -6,7 +6,7 @@ html,body {
   body {
     padding-top: .5em;
     text-align: center;
-    background-image: url("https://media.istockphoto.com/photos/stars-and-galaxy-outer-space-sky-night-universe-black-starry-of-picture-id1036515856?k=6&m=1036515856&s=170667a&w=0&h=nj0QmUrXuwR3IM_JQGs2IFzDtwBtSOqRRUn-etZpKO4=");
+    background-image: url("backgrounds/Background.jpg");
     background-size: cover;
   }
   
@@ -19,7 +19,7 @@ html,body {
     background-color: black;
     width: 100%;
     height: 100%;
-    background-image: url("bg.jpg")
+    background-image: url("backgrounds/bg.jpg")
   }
   #container {
   height: 600px;

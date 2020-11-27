@@ -55,6 +55,7 @@ let alienBulletHeight = 8
 let alienBulletWidth = 3
 let alienImage = image2
 
+
 // function drawBgImg(img) {
 //     let bgImg = new Image();
 //     bgImg.src = img;
@@ -137,8 +138,8 @@ function startGame () {
     startButton.innerHTML = "Level " + level
     if (gmLive === 1) {
         setInterval(fire, alienFireRate) 
-    setInterval(health, 15000)
-    setInterval(boost, 23000)
+        setInterval(health, 15000)
+        setInterval(boost, 23000)
     }
 }
 
@@ -267,6 +268,7 @@ function playAgain() {
     clearInterval(interval)
     alienFireRate = 1300
     points = 50
+    alienRender = 1
     bossHealth = 20
     alienImage = image2
     bossShooting = 1
@@ -532,6 +534,7 @@ document.addEventListener('keydown', function(evt) {
         arrBullets.push(bullet)
         fireStatus = !fireStatus
         setTimeout(fireReady, playerFireRate);
+        fireSound.pause()
         fireSound.play()
     }
 }) 
@@ -582,56 +585,15 @@ function alienBoom() {
                         arrBullets.splice(b,1)
                         alienSpeed *= -1
                         startScore += points
-                        setTimeout(alienRenderBack, 40)
-                        setTimeout(bossAnimation, 80)
-                        setTimeout(alienRenderBack, 120)
-                        setTimeout(bossAnimation, 160)
-                        setTimeout(alienRenderBack, 200)
-                        setTimeout(bossAnimation, 240)
-                        setTimeout(alienRenderBack, 280)
-                        setTimeout(bossAnimation, 320)
-                        setTimeout(alienRenderBack, 360)
-                        setTimeout(bossAnimation, 400)
-                        setTimeout(alienRenderBack, 440)
-                        setTimeout(bossAnimation, 480)
-                        setTimeout(alienRenderBack, 520)
-                        setTimeout(bossAnimation, 560)
-                        setTimeout(alienRenderBack, 600)
-                        setTimeout(bossAnimation, 640)
-                        setTimeout(alienRenderBack, 680)
-                        setTimeout(bossAnimation, 720)
-                        setTimeout(alienRenderBack, 760)
-                        setTimeout(bossAnimation, 800)
-                        setTimeout(alienRenderBack, 840)
-                        setTimeout(bossAnimation, 880)
-                        setTimeout(alienRenderBack, 920)
-                        setTimeout(bossAnimation, 960)
-                        setTimeout(alienRenderBack, 1000)
-                        setTimeout(alienRenderBack, 1040)
-                        setTimeout(bossAnimation, 1080)
-                        setTimeout(alienRenderBack, 1120)
-                        setTimeout(bossAnimation, 1160)
-                        setTimeout(alienRenderBack, 1200)
-                        setTimeout(bossAnimation, 1240)
-                        setTimeout(alienRenderBack, 1280)
-                        setTimeout(bossAnimation, 1320)
-                        setTimeout(alienRenderBack, 1360)
-                        setTimeout(bossAnimation, 1400)
-                        setTimeout(alienRenderBack, 1440)
-                        setTimeout(bossAnimation, 1480)
-                        setTimeout(alienRenderBack, 1520)
-                        setTimeout(bossAnimation, 1560)
-                        setTimeout(alienRenderBack, 1600)
-                        setTimeout(bossAnimation, 1640)
-                        setTimeout(alienRenderBack, 1680)
-                        setTimeout(bossAnimation, 1720)
-                        setTimeout(alienRenderBack, 1760)
-                        setTimeout(bossAnimation, 1800)
-                        setTimeout(alienRenderBack, 1840)
-                        setTimeout(bossAnimation, 1880)
-                        setTimeout(alienRenderBack, 1920)
-                        setTimeout(bossAnimation, 1960)
-                        setTimeout(alienRenderBack, 2000)
+
+                        let timeout = 40;
+
+                        while (timeout < 2000) {
+                            setTimeout(bossAnimation, timeout)
+                            timeout += 40
+                            setTimeout(alienRenderBack, timeout)
+                            timeout += 40;
+                        }
                         setTimeout(bossDefeat, 2040)
                         setTimeout(bssSound, 2040)
                         setTimeout(gameWinStatus, 2040)
